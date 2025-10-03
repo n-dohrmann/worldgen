@@ -2,8 +2,8 @@
 #include "../stb/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../stb/stb_image_write.h"
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #define TILE_WIDTH 12
 #define TILE_HEIGHT 12
@@ -25,23 +25,25 @@ typedef struct {
 } Cell;
 
 typedef struct {
-    uint8_t *pixels;
+    uint8_t* pixels;
     int width;
     int height;
     int channels;
 } Image;
 
 // Load tileset image
-Image load_image(const char *path) {
-    Image img = {0};
+Image load_image(const char* path)
+{
+    Image img = { 0 };
     img.pixels = stbi_load(path, &img.width, &img.height, &img.channels, 4);
     img.channels = 4; // Force RGBA
     return img;
 }
 
 // Create blank image
-Image create_image(int width, int height) {
-    Image img = {0};
+Image create_image(int width, int height)
+{
+    Image img = { 0 };
     img.width = width;
     img.height = height;
     img.channels = 4;
@@ -50,7 +52,8 @@ Image create_image(int width, int height) {
 }
 
 // Get pixel from image
-void get_pixel(Image *img, int x, int y, Color *out) {
+void get_pixel(Image* img, int x, int y, Color* out)
+{
     if (x < 0 || x >= img->width || y < 0 || y >= img->height) {
         out->r = out->g = out->b = out->a = 0;
         return;
@@ -63,8 +66,10 @@ void get_pixel(Image *img, int x, int y, Color *out) {
 }
 
 // Set pixel in image
-void set_pixel(Image *img, int x, int y, Color color) {
-    if (x < 0 || x >= img->width || y < 0 || y >= img->height) return;
+void set_pixel(Image* img, int x, int y, Color color)
+{
+    if (x < 0 || x >= img->width || y < 0 || y >= img->height)
+        return;
     int idx = (y * img->width + x) * 4;
     img->pixels[idx + 0] = color.r;
     img->pixels[idx + 1] = color.g;
@@ -73,10 +78,13 @@ void set_pixel(Image *img, int x, int y, Color color) {
 }
 
 // Blend two colors (simple alpha blending)
-Color blend_colors(Color fg, Color bg) {
-    if (fg.a == 255) return fg;
-    if (fg.a == 0) return bg;
-    
+Color blend_colors(Color fg, Color bg)
+{
+    if (fg.a == 255)
+        return fg;
+    if (fg.a == 0)
+        return bg;
+
     float alpha = fg.a / 255.0f;
     Color result;
     result.r = (uint8_t)(fg.r * alpha + bg.r * (1 - alpha));
@@ -87,7 +95,8 @@ Color blend_colors(Color fg, Color bg) {
 }
 
 // Apply color modulation to a pixel
-Color modulate_color(Color pixel, Color mod) {
+Color modulate_color(Color pixel, Color mod)
+{
     Color result;
     result.r = (pixel.r * mod.r) / 255;
     result.g = (pixel.g * mod.g) / 255;
@@ -97,69 +106,73 @@ Color modulate_color(Color pixel, Color mod) {
 }
 
 // Check if a color is magenta (transparency key)
-int is_magenta(Color c) {
+int is_magenta(Color c)
+{
     // Check if it's bright magenta (255, 0, 255) or close to it
     return (c.r > 250 && c.g < 5 && c.b > 250);
 }
 
 // Draw a glyph to the output image
-void draw_glyph(Image *output, Image *tileset, unsigned char ch, 
-                int grid_x, int grid_y, Color fg, Color bg) {
+void draw_glyph(Image* output, Image* tileset, unsigned char ch,
+    int grid_x, int grid_y, Color fg, Color bg)
+{
     // Calculate source position in tileset
     int src_x = (ch % TILESET_COLS) * TILE_WIDTH;
     int src_y = (ch / TILESET_COLS) * TILE_HEIGHT;
-    
+
     // Calculate destination position in output
     int dst_x = grid_x * TILE_WIDTH;
     int dst_y = grid_y * TILE_HEIGHT;
-    
+
     // First, fill with background color
     for (int py = 0; py < TILE_HEIGHT; py++) {
         for (int px = 0; px < TILE_WIDTH; px++) {
             set_pixel(output, dst_x + px, dst_y + py, bg);
         }
     }
-    
+
     // Then draw the glyph on top
     for (int py = 0; py < TILE_HEIGHT; py++) {
         for (int px = 0; px < TILE_WIDTH; px++) {
             Color tile_pixel;
             get_pixel(tileset, src_x + px, src_y + py, &tile_pixel);
-            
+
             // Skip magenta pixels (treat as transparent)
             if (is_magenta(tile_pixel)) {
                 continue;
             }
-            
+
             // Modulate tileset pixel with foreground color
             Color modulated = modulate_color(tile_pixel, fg);
-            
+
             // Blend with background (in case tile has partial transparency)
             Color final = blend_colors(modulated, bg);
-            
+
             set_pixel(output, dst_x + px, dst_y + py, final);
         }
     }
 }
 
 // Render entire grid
-void render_grid(Image *output, Image *tileset, Cell grid[GRID_HEIGHT][GRID_WIDTH]) {
+void render_grid(Image* output, Image* tileset, Cell grid[GRID_HEIGHT][GRID_WIDTH])
+{
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
-            Cell *cell = &grid[y][x];
+            Cell* cell = &grid[y][x];
             draw_glyph(output, tileset, cell->ch, x, y, cell->fg, cell->bg);
         }
     }
 }
 
 // Create example scene
-void create_example_scene(Cell grid[GRID_HEIGHT][GRID_WIDTH]) {
-    Color white = {255, 255, 255, 255};
-    Color black = {0, 0, 0, 255};
-    Color red = {255, 0, 0, 255};
-    Color green = {0, 255, 0, 255};
-    Color blue = {0, 100, 255, 255};
-    Color brown = {200, 150, 100, 255};
+void create_example_scene(Cell grid[GRID_HEIGHT][GRID_WIDTH])
+{
+    Color white = { 255, 255, 255, 255 };
+    Color black = { 0, 0, 0, 255 };
+    Color red = { 255, 0, 0, 255 };
+    Color green = { 0, 255, 0, 255 };
+    Color blue = { 0, 100, 255, 255 };
+    Color brown = { 200, 150, 100, 255 };
 
     // Fill with spaces
     for (int y = 0; y < GRID_HEIGHT; y++) {
@@ -177,7 +190,7 @@ void create_example_scene(Cell grid[GRID_HEIGHT][GRID_WIDTH]) {
     // Draw enemies
     grid[20][30].ch = 'g';
     grid[20][30].fg = green;
-    
+
     grid[30][50].ch = 'D';
     grid[30][50].fg = red;
 
@@ -188,14 +201,15 @@ void create_example_scene(Cell grid[GRID_HEIGHT][GRID_WIDTH]) {
     }
 
     // Add title
-    const char *title = "Dwarf Fortress Style ASCII Art";
+    const char* title = "Dwarf Fortress Style ASCII Art";
     for (int i = 0; title[i] != '\0'; i++) {
         grid[2][25 + i].ch = title[i];
         grid[2][25 + i].fg = white;
     }
 }
 
-int main() {
+int main()
+{
     // Load tileset
     printf("Loading tileset...\n");
     Image tileset = load_image("../bitmaps/DB_curses_12x12.bmp");
@@ -211,14 +225,14 @@ int main() {
     // Create and render scene
     Cell grid[GRID_HEIGHT][GRID_WIDTH];
     create_example_scene(grid);
-    
+
     printf("Rendering...\n");
     render_grid(&output, &tileset, grid);
 
     // Save output
     printf("Saving output.png...\n");
-    if (!stbi_write_png("output.png", output.width, output.height, 4, 
-                        output.pixels, output.width * 4)) {
+    if (!stbi_write_png("output.png", output.width, output.height, 4,
+            output.pixels, output.width * 4)) {
         printf("Failed to save output.png\n");
         return 1;
     }
