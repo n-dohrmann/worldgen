@@ -6,19 +6,17 @@ currently this project is just getting started. `src/main.c` is just for getting
 
 ## Dependencies
 - stb [header files](https://github.com/nothings/stb/tree/master) for image rendering
-- cmake
+- cmake 4.0+
 
 ## Tilesets
 - Hanuman's 12x12 Curses Tileset, found [here](https://dffd.bay12games.com/file.php?id=318)
 
-
 ## Building
-- download a tileset and provide its path
+- download a tileset and provide its path in the `TILESET_PATH` definition in
+`src/main.c`.
 - Then,
 ```sh
-mkdir build
-cd build
-cmake ..
-make
-./bin/worldgen
+cmake -S . -B build
+cmake --build build
+./build/apps/worldgen_app
 ```

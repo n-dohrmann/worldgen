@@ -1,42 +1,27 @@
+
+#include <worldgen/render.h>
+
+#ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #include "../stb/stb_image.h"
+#endif // STB_IMAGE_IMPLEMENTATION
+
+#ifndef STB_IMAGE_WRITE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../stb/stb_image_write.h"
-#include <stdint.h>
-#include <stdio.h>
+#endif // STB_IMAGE_WRITE_IMPLEMENTATION
 
-#define TILE_WIDTH 12
-#define TILE_HEIGHT 12
-#define TILESET_COLS 16
-#define TILESET_ROWS 16
+const Color white = { 255, 255, 255, 255 };
+const Color black = { 0, 0, 0, 255 };
+const Color red = { 255, 0, 0, 255 };
+const Color green = { 0, 255, 0, 255 };
+const Color blue = { 0, 100, 255, 255 };
 
-// Grid dimensions (in characters)
-#define GRID_WIDTH 80
-#define GRID_HEIGHT 50
-
-typedef struct {
-    uint8_t r, g, b, a;
-} Color;
-
-typedef struct {
-    unsigned char ch;
-    Color fg;
-    Color bg;
-} Cell;
-
-typedef struct {
-    uint8_t* pixels;
-    int width;
-    int height;
-    int channels;
-} Image;
-
-// Load tileset image
 Image load_image(const char* path)
 {
     Image img = { 0 };
-    img.pixels = stbi_load(path, &img.width, &img.height, &img.channels, 4);
-    img.channels = 4; // Force RGBA
+    int _channels;
+    img.pixels = stbi_load(path, &img.width, &img.height, &_channels, IMAGE_CHANNELS);
     return img;
 }
 
@@ -46,7 +31,6 @@ Image create_image(int width, int height)
     Image img = { 0 };
     img.width = width;
     img.height = height;
-    img.channels = 4;
     img.pixels = (uint8_t*)calloc(width * height * 4, sizeof(uint8_t));
     return img;
 }
@@ -77,7 +61,7 @@ void set_pixel(Image* img, int x, int y, Color color)
     img->pixels[idx + 3] = color.a;
 }
 
-// Blend two colors (simple alpha blending)
+// Blend two colors
 Color blend_colors(Color fg, Color bg)
 {
     if (fg.a == 255)
@@ -153,94 +137,47 @@ void draw_glyph(Image* output, Image* tileset, unsigned char ch,
     }
 }
 
-// Render entire grid
-void render_grid(Image* output, Image* tileset, Cell grid[GRID_HEIGHT][GRID_WIDTH])
+Grid new_grid(int width, int height)
 {
-    for (int y = 0; y < GRID_HEIGHT; y++) {
-        for (int x = 0; x < GRID_WIDTH; x++) {
-            Cell* cell = &grid[y][x];
+    Grid grid = {0};
+    grid.width = width;
+    grid.height = height;
+    grid.cells = (Cell*)calloc(width * height, sizeof(Cell));
+    if (!grid.cells) {
+        fprintf(stderr, "Failed to allocate memory for grid\n");
+        exit(EXIT_FAILURE);
+    }
+    return grid;
+}
+
+Cell* get_cell(Grid* grid, int x, int y)
+{
+    if (x < 0 || x >= grid->width || y < 0 || y >= grid->height) {
+        return NULL;
+    }
+    return &(grid->cells[y * grid->width + x]);
+}
+
+void set_cell(Grid* grid, int x, int y, Cell cell)
+{
+    if (x < 0 || x >= grid->width || y < 0 || y >= grid->height) {
+        return;
+    }
+    grid->cells[y * grid->width + x] = cell;
+}
+
+void free_grid(Grid* grid)
+{
+    free(grid->cells);
+}
+
+// Render entire grid
+void render_grid(Image* output, Image* tileset, Grid* grid)
+{
+    for (int y = 0; y < grid->height; y++) {
+        for (int x = 0; x < grid->width; x++) {
+            Cell* cell = &(grid->cells[y * grid->width + x]);
             draw_glyph(output, tileset, cell->ch, x, y, cell->fg, cell->bg);
         }
     }
-}
-
-// Create example scene
-void create_example_scene(Cell grid[GRID_HEIGHT][GRID_WIDTH])
-{
-    Color white = { 255, 255, 255, 255 };
-    Color black = { 0, 0, 0, 255 };
-    Color red = { 255, 0, 0, 255 };
-    Color green = { 0, 255, 0, 255 };
-    Color blue = { 0, 100, 255, 255 };
-    Color brown = { 200, 150, 100, 255 };
-
-    // Fill with spaces
-    for (int y = 0; y < GRID_HEIGHT; y++) {
-        for (int x = 0; x < GRID_WIDTH; x++) {
-            grid[y][x].ch = ' ';
-            grid[y][x].fg = white;
-            grid[y][x].bg = black;
-        }
-    }
-
-    // Draw player
-    grid[25][40].ch = '@';
-    grid[25][40].fg = white;
-
-    // Draw enemies
-    grid[20][30].ch = 'g';
-    grid[20][30].fg = green;
-
-    grid[30][50].ch = 'D';
-    grid[30][50].fg = red;
-
-    // Draw terrain
-    for (int x = 10; x < 30; x++) {
-        grid[35][x].ch = '~';
-        grid[35][x].fg = blue;
-    }
-
-    // Add title
-    const char* title = "Dwarf Fortress Style ASCII Art";
-    for (int i = 0; title[i] != '\0'; i++) {
-        grid[2][25 + i].ch = title[i];
-        grid[2][25 + i].fg = white;
-    }
-}
-
-int main()
-{
-    // Load tileset
-    printf("Loading tileset...\n");
-    Image tileset = load_image("../bitmaps/DB_curses_12x12.bmp");
-    if (!tileset.pixels) {
-        printf("Failed to load tileset.bmp\n");
-        return 1;
-    }
-    printf("Tileset loaded: %dx%d\n", tileset.width, tileset.height);
-
-    // Create output image
-    Image output = create_image(GRID_WIDTH * TILE_WIDTH, GRID_HEIGHT * TILE_HEIGHT);
-
-    // Create and render scene
-    Cell grid[GRID_HEIGHT][GRID_WIDTH];
-    create_example_scene(grid);
-
-    printf("Rendering...\n");
-    render_grid(&output, &tileset, grid);
-
-    // Save output
-    printf("Saving output.png...\n");
-    if (!stbi_write_png("output.png", output.width, output.height, 4,
-            output.pixels, output.width * 4)) {
-        printf("Failed to save output.png\n");
-        return 1;
-    }
-    printf("Success! Image saved to output.png\n");
-
-    // Cleanup
-    stbi_image_free(tileset.pixels);
-    free(output.pixels);
-
-    return 0;
 }
