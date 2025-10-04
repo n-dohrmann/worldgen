@@ -14,6 +14,7 @@ currently this project is just getting started. `src/main.c` is just for getting
 ## Building
 - download a tileset and provide its path in the `TILESET_PATH` definition in
 `src/main.c`.
+- download header files from stb, linked above.  Then, place `stb_image.h` and `stb_image_write.h` in a directory called `stb`.
 - Then,
 ```sh
 cmake -S . -B build
