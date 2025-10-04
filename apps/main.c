@@ -1,9 +1,12 @@
 
-#include "render/render.h"
+#include <worldgen/render.h>
 
 // Grid dimensions (in characters)
 #define GRID_WIDTH 80
 #define GRID_HEIGHT 50
+
+// path to tileset from root
+#define TILESET_PATH "./bitmaps/DB_curses_12x12.bmp"
 
 // Create example scene
 void create_example_scene(Grid* grid)
@@ -63,7 +66,7 @@ int main()
 {
     // Load tileset
     printf("Loading tileset...\n");
-    Image tileset = load_image("../bitmaps/DB_curses_12x12.bmp");
+    Image tileset = load_image(TILESET_PATH);
     if (!tileset.pixels) {
         printf("Failed to load tileset.bmp\n");
         return 1;
