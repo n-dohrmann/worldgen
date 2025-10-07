@@ -1,5 +1,6 @@
 
 #include <worldgen/render.h>
+#include <worldgen/cleanup.h>
 
 // Grid dimensions (in characters)
 #define GRID_WIDTH 80
@@ -12,8 +13,8 @@
 void create_example_scene(Grid* grid)
 {
     // Fill with spaces
-    for (int y = 0; y < GRID_HEIGHT; y++) {
-        for (int x = 0; x < GRID_WIDTH; x++) {
+    for (int y = 0; y < grid->height; y++) {
+        for (int x = 0; x < grid->width; x++) {
             Cell cell = {
                 .ch = ' ',
                 .fg = white,
@@ -67,6 +68,8 @@ int main()
     // Load tileset
     printf("Loading tileset...\n");
     Image tileset = load_image(TILESET_PATH);
+    defer((cleanup_fn)stbi_image_free, tileset.pixels);
+
     if (!tileset.pixels) {
         printf("Failed to load tileset.bmp\n");
         return 1;
@@ -75,9 +78,11 @@ int main()
 
     // Create output image
     Image output = create_image(GRID_WIDTH * TILE_WIDTH, GRID_HEIGHT * TILE_HEIGHT);
+    defer((cleanup_fn)free, output.pixels);
 
     // Create and render scene
     Grid grid = new_grid(GRID_WIDTH, GRID_HEIGHT);
+    defer((cleanup_fn)free_grid, &grid);
     create_example_scene(&grid);
 
     printf("Rendering...\n");
@@ -93,9 +98,7 @@ int main()
     printf("Success! Image saved to output.png\n");
 
     // Cleanup
-    stbi_image_free(tileset.pixels);
-    free(output.pixels);
-    free_grid(&grid);
+    clean_all();
 
     return 0;
 }
