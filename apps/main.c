@@ -1,5 +1,6 @@
 
 #include <worldgen/render.h>
+#include <worldgen/cleanup.h>
 
 // Grid dimensions (in characters)
 #define GRID_WIDTH 80
@@ -12,8 +13,8 @@
 void create_example_scene(Grid* grid)
 {
     // Fill with spaces
-    for (int y = 0; y < GRID_HEIGHT; y++) {
-        for (int x = 0; x < GRID_WIDTH; x++) {
+    for (int y = 0; y < grid->height; y++) {
+        for (int x = 0; x < grid->width; x++) {
             Cell cell = {
                 .ch = ' ',
                 .fg = white,
