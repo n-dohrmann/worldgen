@@ -77,7 +77,7 @@ int main()
     Image output = create_image(GRID_WIDTH * TILE_WIDTH, GRID_HEIGHT * TILE_HEIGHT);
 
     // Create and render scene
-    Grid grid = new_grid(GRID_HEIGHT, GRID_WIDTH);
+    Grid grid = new_grid(GRID_WIDTH, GRID_HEIGHT);
     create_example_scene(&grid);
 
     printf("Rendering...\n");
