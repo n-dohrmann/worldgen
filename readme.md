@@ -1,8 +1,7 @@
 # worldgen image rendering
 
 a worldgen project in the style of Dwarf Fortress ascii art.
-
-currently this project is just getting started. `src/main.c` is just for getting familiar with stb.
+currently this project is just getting started...
 
 ## Dependencies
 - stb [header files](https://github.com/nothings/stb/tree/master) for image rendering
@@ -15,9 +14,10 @@ currently this project is just getting started. `src/main.c` is just for getting
 - download a tileset and provide its path in the `TILESET_PATH` definition in
 `src/main.c`.
 - download header files from stb, linked above.  Then, place `stb_image.h` and `stb_image_write.h` in a directory called `stb`.
-- Then,
+- Then, from the root directory of the project,
 ```sh
 cmake -S . -B build
 cmake --build build
 ./build/apps/worldgen_app
 ```
+alternatively, use `./run.sh` if on a Unix-like system.
