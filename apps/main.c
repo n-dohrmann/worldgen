@@ -1,6 +1,6 @@
 
-#include <worldgen/render.h>
 #include <worldgen/cleanup.h>
+#include <worldgen/render.h>
 
 // Grid dimensions (in characters)
 #define GRID_WIDTH 80
@@ -10,60 +10,42 @@
 #define TILESET_PATH "./bitmaps/DB_curses_12x12.bmp"
 
 // Create example scene
-void create_example_scene(Grid* grid)
+void
+create_example_scene(Grid* grid)
 {
     // Fill with spaces
     for (int y = 0; y < grid->height; y++) {
         for (int x = 0; x < grid->width; x++) {
-            Cell cell = {
-                .ch = ' ',
-                .fg = white,
-                .bg = black
-            };
+            Cell cell = { .ch = ' ', .fg = white, .bg = black };
             set_cell(grid, x, y, cell);
         }
     }
 
     // Draw player
-    Cell player = {
-        .ch = '@',
-        .fg = white,
-        .bg = black
-    };
+    Cell player = { .ch = '@', .fg = white, .bg = black };
     set_cell(grid, 25, 40, player);
 
     // Draw enemies
-    Cell enemy = {
-        .ch = 'g',
-        .fg = green,
-        .bg = black
-    };
+    Cell enemy = { .ch = 'g', .fg = green, .bg = black };
     set_cell(grid, 20, 30, enemy);
 
     // Draw terrain
-    Cell water = {
-        .ch = '~',
-        .fg = blue,
-        .bg = black
-    };
+    Cell water = { .ch = '~', .fg = blue, .bg = black };
     for (int x = 10; x < 30; x++) {
         set_cell(grid, x, 35, water);
     }
 
     // Add title
     const char* title = "Dwarf Fortress Style ASCII Art";
-    Cell title_cell = {
-        .ch = ' ',
-        .fg = white,
-        .bg = black
-    };
+    Cell title_cell = { .ch = ' ', .fg = white, .bg = black };
     for (int i = 0; title[i] != '\0'; i++) {
         title_cell.ch = title[i];
         set_cell(grid, 25 + i, 2, title_cell);
     }
 }
 
-int main()
+int
+main()
 {
     // Load tileset
     printf("Loading tileset...\n");
@@ -77,7 +59,8 @@ int main()
     printf("Tileset loaded: %dx%d\n", tileset.width, tileset.height);
 
     // Create output image
-    Image output = create_image(GRID_WIDTH * TILE_WIDTH, GRID_HEIGHT * TILE_HEIGHT);
+    Image output =
+      create_image(GRID_WIDTH * TILE_WIDTH, GRID_HEIGHT * TILE_HEIGHT);
     defer((cleanup_fn)free, output.pixels);
 
     // Create and render scene
@@ -90,8 +73,12 @@ int main()
 
     // Save output
     printf("Saving output.png...\n");
-    if (!stbi_write_png("output.png", output.width, output.height, 4,
-            output.pixels, output.width * 4)) {
+    if (!stbi_write_png("output.png",
+                        output.width,
+                        output.height,
+                        4,
+                        output.pixels,
+                        output.width * 4)) {
         printf("Failed to save output.png\n");
         return 1;
     }
