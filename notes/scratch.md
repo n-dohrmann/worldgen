@@ -60,3 +60,11 @@ minimize divergence of the field, the result should be good enough.
 #### Design
 
 #### Algorithms
+
+### 4. Biome Designation
+
+#### Design
+
+#### Algorithms
+
+### 5. Rendering

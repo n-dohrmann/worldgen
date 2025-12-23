@@ -4,3 +4,5 @@ target_compile_options(worldgen_app PRIVATE -Wall -Wextra)
 
 target_link_libraries(worldgen_app PRIVATE render)
 target_link_libraries(worldgen_app PRIVATE cleanup)
+# add in the math library
+target_link_libraries(worldgen_app PRIVATE m)

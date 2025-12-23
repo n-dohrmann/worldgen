@@ -17,6 +17,6 @@ jobs:
       - name: stb_pull_image
         run: curl https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h -o  /tmp/stb_image.h
       - name: std_pull_image_write
-        run: curl https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image_write.h -o  /tmp/std_image_write.h
+        run: curl https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image_write.h -o  /tmp/stb_image_write.h
       - name: cmake_build
         run: cmake --build build
