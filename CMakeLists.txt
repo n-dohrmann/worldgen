@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.31) # lowering for GH actions...
 project(
     worldgen
     VERSION 1.0
