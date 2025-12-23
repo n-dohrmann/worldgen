@@ -20,13 +20,11 @@ typedef struct
 } CleanupStack;
 
 // defer memory cleanup action
-void
-defer(cleanup_fn cleanup, void* data);
+void defer(cleanup_fn cleanup, void* data);
 
 // singleton stack
 CleanupStack cl_stack;
 
-void
-clean_all();
+void clean_all();
 
 #endif // CLEANUP_H

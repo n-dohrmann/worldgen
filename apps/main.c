@@ -10,8 +10,7 @@
 #define TILESET_PATH "./bitmaps/DB_curses_12x12.bmp"
 
 // Create example scene
-void
-create_example_scene(Grid* grid)
+void create_example_scene(Grid* grid)
 {
     // Fill with spaces
     for (int y = 0; y < grid->height; y++) {
@@ -44,8 +43,7 @@ create_example_scene(Grid* grid)
     }
 }
 
-int
-main()
+int main()
 {
     // Load tileset
     printf("Loading tileset...\n");
@@ -59,8 +57,7 @@ main()
     printf("Tileset loaded: %dx%d\n", tileset.width, tileset.height);
 
     // Create output image
-    Image output =
-      create_image(GRID_WIDTH * TILE_WIDTH, GRID_HEIGHT * TILE_HEIGHT);
+    Image output = create_image(GRID_WIDTH * TILE_WIDTH, GRID_HEIGHT * TILE_HEIGHT);
     defer((cleanup_fn)free, output.pixels);
 
     // Create and render scene
@@ -74,11 +71,11 @@ main()
     // Save output
     printf("Saving output.png...\n");
     if (!stbi_write_png("output.png",
-                        output.width,
-                        output.height,
-                        4,
-                        output.pixels,
-                        output.width * 4)) {
+            output.width,
+            output.height,
+            4,
+            output.pixels,
+            output.width * 4)) {
         printf("Failed to save output.png\n");
         return 1;
     }
