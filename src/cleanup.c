@@ -1,7 +1,7 @@
 
 #include <worldgen/cleanup.h>
 
-CleanupStack cl_stack = { 0 };
+static CleanupStack cl_stack = { 0 };
 
 void defer(cleanup_fn cleanup, void* data)
 {

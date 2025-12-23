@@ -22,9 +22,6 @@ typedef struct
 // defer memory cleanup action
 void defer(cleanup_fn cleanup, void* data);
 
-// singleton stack
-CleanupStack cl_stack;
-
 void clean_all();
 
 #endif // CLEANUP_H
