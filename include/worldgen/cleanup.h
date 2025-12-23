@@ -21,6 +21,8 @@ typedef struct
 
 // defer memory cleanup action
 void defer(cleanup_fn cleanup, void* data);
+#define DEFER(fn, data) defer((cleanup_fn)(fn), data)
+#define DEFER_FREE(data) defer((cleanup_fn)free, data)
 
 void clean_all();
 
