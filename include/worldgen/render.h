@@ -2,8 +2,10 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include "../../stb/stb_image.h"
-#include "../../stb/stb_image_write.h"
+#include <worldgen/include_paths.h>
+
+#include STB_IMAGE_PATH_D
+#include STB_IMAGE_WRITE_PATH_D
 #include <stdint.h>
 #include <stdio.h>
 

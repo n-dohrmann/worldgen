@@ -1,14 +1,15 @@
 
+#include <worldgen/include_paths.h>
 #include <worldgen/render.h>
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
-#include "../stb/stb_image.h"
+#include STB_IMAGE_PATH_S
 #endif // STB_IMAGE_IMPLEMENTATION
 
 #ifndef STB_IMAGE_WRITE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "../stb/stb_image_write.h"
+#include STB_IMAGE_WRITE_PATH_S
 #endif // STB_IMAGE_WRITE_IMPLEMENTATION
 
 const Color white = { 255, 255, 255, 255 };

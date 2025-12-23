@@ -2,18 +2,21 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: cmake_pre
-      run: cmake -S . -B build
-    - name: cmake_build
-      run: cmake --build build
+      - uses: actions/checkout@v4
+      - name: cmake_pre
+        run: cmake -S . -B build -DCMAKE_C_FLAGS="-DCI_BUILD=1"
+      - name: stb_pull_image
+        run: curl https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h -o  /tmp/stb_image.h
+      - name: std_pull_image_write
+        run: curl https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image_write.h -o  /tmp/std_image_write.h
+      - name: cmake_build
+        run: cmake --build build
