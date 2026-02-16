@@ -3,8 +3,8 @@
 #include <worldgen/render.h>
 
 // Grid dimensions (in characters)
-#define GRID_WIDTH 80
-#define GRID_HEIGHT 50
+#define GRID_WIDTH 160
+#define GRID_HEIGHT 90
 
 // path to tileset from root
 #define TILESET_PATH "./bitmaps/DB_curses_12x12.bmp"

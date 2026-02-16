@@ -55,6 +55,17 @@ minimize divergence of the field, the result should be good enough.
 
 #### Algorithms
 
+[methods review](https://www.cs.uoregon.edu/Reports/UG-199204-Gondek.pdf)
+
+a few methods mentioned in the above reivew are:
+
+- midpoint displacement methods
+- fractional Brownian motion
+- diamond square subdivision.
+- square-square subdivision?
+- random faults (bad, might be $\mathcal{O}(n^3)$ for a $n$ by $n$ height grid)
+- fourier methods: spectral synthesis:
+
 ### 3: Humidity and Precipitation
 
 #### Design
