@@ -55,7 +55,14 @@ minimize divergence of the field, the result should be good enough.
 
 #### Algorithms
 
-[methods review](https://www.cs.uoregon.edu/Reports/UG-199204-Gondek.pdf)
+**Papers**
+
+- [Realtime Procedural Terrain Generation](https://web.mit.edu/cesium/Public/terrain.pdf)
+- [Terrain Synthesis Using Noise by
+  Examples](https://dl.acm.org/doi/pdf/10.1145/3131085.3131099)
+- [Dynamic Terrain Generation Based on Multifractal Techniques](https://svn.sable.mcgill.ca/sable/courses/COMP763/oldpapers/lawick-95-dynamic.pdf)
+- [Fractal Terrain Generation](https://link.springer.com/chapter/10.1007/979-8-8688-1787-8_6) (this is behind a paywall)
+- [methods review](https://www.cs.uoregon.edu/Reports/UG-199204-Gondek.pdf)
 
 a few methods mentioned in the above reivew are:
 
